@@ -1,6 +1,9 @@
-ID,Folder,Endpoint,Method,Scenario,Input file/body,Expected status,Expected response check,Type,Pass/Fail,Evidence
-TC01,Functional,/health,GET,Service is alive,-,200,status=ok,functional,,
-TC02,Functional,/readings,POST,Create reading happy path,mock-data/sensor-reading-valid.json,201,"has reading_id, accepted=true",functional,,
-TC03,Negative,/readings,POST,Missing device_id,mock-data/sensor-reading-invalid-missing-device.json,400,Problem Details,negative,,
-TC04,Auth,/readings,POST,Missing token,mock-data/sensor-reading-valid.json,401,Problem Details,auth,,
-TC05,Boundary,/readings,POST,High temperature boundary,mock-data/sensor-reading-boundary.json,201/400,documented behavior,boundary,,
+﻿ID,Folder,Endpoint,Method,Scenario,Input file/body,Expected status,Expected response check,Type,Pass/Fail,Evidence
+TC01,01_Functional,/health,GET,Service health check,-,200,"status=ok; service=analytics-service",functional,Pass,reports/newman-report.html
+TC02,01_Functional,/dashboard/overview,GET,Get dashboard overview,date=2026-05-02,200,"has date; cards is array; cards length > 0",functional,Pass,reports/newman-report.html
+TC03,01_Functional,/analytics/daily-summary,GET,Get daily analytics summary,date=2026-05-02,200,"has date; has totalAccess; has totalAlerts",functional,Pass,reports/newman-report.html
+TC04,02_Auth,/health,GET,Public health endpoint without token,-,200,"public endpoint returns 200",auth,Pass,reports/newman-report.html
+TC05,03_Negative,/dashboard/overview,GET,Missing required date parameter,-,400/422,"missing date should not return success",negative,Pass,reports/newman-report.html
+TC06,04_Boundary_Reliability,/dashboard/overview,GET,Boundary date value,date=2026-01-01,200/400/404,"documented behavior; response time < 1000ms",boundary,Pass,reports/newman-report.html
+TC07,05_Consumer_side_Smoke,/dashboard/overview,GET,Consumer reads dashboard cards,date=2026-05-02,200,"consumer can parse cards array",consumer-smoke,Pass,reports/newman-report.html
+TC08,06_Local_only_NonFunctional,/health,GET,Response time check,-,200,"response time < 1000ms",non-functional,Pass,reports/newman-report.html

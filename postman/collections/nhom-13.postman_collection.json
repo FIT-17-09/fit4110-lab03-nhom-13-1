@@ -88,6 +88,48 @@
               }
             }
           ]
+        },
+        {
+          "name": "POST Receive Analytics Event",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"eventId\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"correlationId\": \"a12f9c88-1111-2222-3333-abcdef123456\",\n  \"timestamp\": \"2026-05-18T12:00:00Z\",\n  \"eventType\": \"access.log.created\",\n  \"source\": \"access-gate\",\n  \"data\": {\n    \"accessLogId\": \"log-001\",\n    \"gateId\": \"gate-01\",\n    \"direction\": \"IN\",\n    \"result\": \"ALLOWED\",\n    \"area\": \"main-gate\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": "{{baseUrl}}/analytics/events"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 202', function () {",
+                  "    pm.response.to.have.status(202);",
+                  "});",
+                  "pm.test('Event accepted response has required fields', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('eventId');",
+                  "    pm.expect(json.status).to.eql('accepted');",
+                  "    pm.expect(json).to.have.property('message');",
+                  "});"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
